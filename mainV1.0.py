@@ -80,6 +80,10 @@ st.markdown(
 # ---- Sidebar Navigation ----
 st.sidebar.title("🔍 Navigation")
 page = st.sidebar.radio("Go to", ["Home", "Recommendations", "Top Charts", "Music Hub", "Podcast"])
+if page == "Podcast":
+    st.experimental_set_query_params(page="Podcast")
+elif page == "Music Hub":
+    st.experimental_set_query_params(page="music_hub")
 
 # ---- Sidebar Filters ----
 st.sidebar.title("🎭 Filters")
