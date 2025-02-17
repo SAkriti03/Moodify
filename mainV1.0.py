@@ -8,10 +8,47 @@ import streamlit as st
 import os
 import pandas as pd
 from PIL import Image
+import musichub  # Import Musichub.py properly
+import podcast  # ✅ Import Podcast module
 
-# ---- Page Config ----
+print(dir(musichub))  # This will list all attributes of the module
+
+
+import streamlit as st
+import musichub  # ✅ Ensure lowercase filename
+
+# ✅ Ensure this is the FIRST Streamlit command
 st.set_page_config(page_title="Moodify 🎵", layout="wide", initial_sidebar_state="expanded")
 
+st.sidebar.title("🔍 Navigation")
+
+# ✅ Ensure session state has the correct default value
+if "page" not in st.session_state or st.session_state["page"] not in ["Home", "Music Hub", "Podcast"]:
+    st.session_state["page"] = "Home"  # ✅ Default to Home
+
+# ✅ Fix index issue by ensuring the session state contains the correct case-sensitive value
+page = st.sidebar.radio(
+    "Go to", 
+    ["Home", "Music Hub", "Podcast"], 
+    index=["Home", "Music Hub", "Podcast"].index(st.session_state["page"])
+)
+
+# ✅ Update session state when selection changes
+if st.session_state["page"] != page:
+    st.session_state["page"] = page
+    st.rerun()  # ✅ Use `st.rerun()` instead of `st.experimental_rerun()`
+
+# ✅ Load the correct page dynamically
+if st.session_state["page"] == "Music Hub":
+    musichub.music_hub_page()
+
+elif st.session_state["page"] == "Podcast":
+    podcast.podcast_page()  # ✅ Call Podcast function properly
+
+else:
+    st.write("🏠 Welcome to the Home Page!")  # Placeholder for Home Page
+
+    
 # ---- Load Dataset ----
 data_path = "data1.csv"  # Ensure this file exists in the correct path
 if os.path.exists(data_path):
@@ -76,14 +113,6 @@ st.markdown(
     </style>
     """, unsafe_allow_html=True
 )
-
-# ---- Sidebar Navigation ----
-st.sidebar.title("🔍 Navigation")
-page = st.sidebar.radio("Go to", ["Home", "Recommendations", "Top Charts", "Music Hub", "Podcast"])
-if page == "Podcast":
-    st.experimental_set_query_params(page="Podcast")
-elif page == "Music Hub":
-    st.experimental_set_query_params(page="music_hub")
 
 # ---- Sidebar Filters ----
 st.sidebar.title("🎭 Filters")
